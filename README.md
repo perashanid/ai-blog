@@ -8,6 +8,7 @@ A modern, full-stack blog website with AI-powered content generation and compreh
 - **Modern React Interface**: Clean, responsive design
 - **Search & Pagination**: Easy content discovery
 - **Rich Content Display**: Support for HTML, images, and videos
+- **YouTube Video Integration**: Automatic embedding of YouTube videos
 - **Mobile-First Design**: Works perfectly on all devices
 
 ### Backend
@@ -20,7 +21,8 @@ A modern, full-stack blog website with AI-powered content generation and compreh
 - **Secure Authentication**: Protected admin routes
 - **Dashboard Analytics**: Post statistics and insights
 - **Rich Text Editor**: Create and edit posts with HTML support
-- **Media Management**: Add images and videos to posts
+- **Media Management**: Add images, videos, and YouTube content
+- **YouTube Video Support**: Easy integration of YouTube videos
 - **Tag System**: Organize content with tags
 - **Draft/Publish Workflow**: Control post visibility
 

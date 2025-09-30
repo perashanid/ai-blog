@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { HiCpuChip, HiPencilSquare, HiClock, HiArrowRight, HiNewspaper } from 'react-icons/hi2';
 
 const PostCard = ({ post }) => {
   const navigate = useNavigate();
@@ -24,21 +25,48 @@ const PostCard = ({ post }) => {
     return `${readingTime} min read`;
   };
 
+  const formatExcerpt = (excerpt) => {
+    if (!excerpt) return '';
+    
+    // Remove markdown links from excerpt for cleaner display
+    return excerpt.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+  };
+
   return (
     <article className="post-card" onClick={handleClick}>
       <div className="post-card-header">
-        <span className={`post-type ${post.ai_generated ? 'ai' : 'manual'}`}>
-          {post.ai_generated ? '🤖 AI-Generated' : '✍️ Manual'}
+        <span className={`post-type ${post.newsDigest ? 'news-digest' : post.ai_generated ? 'ai' : 'manual'}`}>
+          {post.newsDigest ? (
+            <>
+              <HiNewspaper className="inline w-4 h-4 mr-1" />
+              News Digest
+            </>
+          ) : post.ai_generated ? (
+            <>
+              <HiCpuChip className="inline w-4 h-4 mr-1" />
+              AI-Generated
+            </>
+          ) : (
+            <>
+              <HiPencilSquare className="inline w-4 h-4 mr-1" />
+              Manual
+            </>
+          )}
         </span>
-        <span className="reading-time">{getReadingTime(post.content)}</span>
+        <span className="reading-time">
+          <HiClock className="inline w-4 h-4 mr-1" />
+          {getReadingTime(post.content)}
+        </span>
       </div>
       
       <h2 className="post-card-title">{post.title}</h2>
-      <p className="post-excerpt">{post.excerpt}</p>
+      <p className="post-excerpt">{formatExcerpt(post.excerpt)}</p>
       
       <div className="post-card-footer">
         <span className="post-date">{formatDate(post.date)}</span>
-        <span className="read-more">Read more →</span>
+        <span className="read-more">
+          Read more <HiArrowRight className="inline w-4 h-4 ml-1" />
+        </span>
       </div>
     </article>
   );

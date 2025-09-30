@@ -42,11 +42,19 @@ const AdminPanel = () => {
   };
 
   const handleMediaAdd = () => {
-    const url = prompt('Enter image/video URL:');
+    const url = prompt('Enter image/video URL (supports YouTube links):');
     const caption = prompt('Enter caption (optional):');
-    const type = url.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? 'image' : 'video';
     
     if (url) {
+      let type = 'video';
+      
+      // Detect media type
+      if (url.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+        type = 'image';
+      } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        type = 'youtube';
+      }
+      
       setFormData({
         ...formData,
         media: [...formData.media, { type, url, caption: caption || '', position: formData.media.length }]
@@ -219,6 +227,52 @@ const AdminPanel = () => {
     setEditingPost(null);
   };
 
+  const handleGenerateAI = async () => {
+    if (!window.confirm('Generate a new AI post? This may take a few moments.')) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setMessage({ type: '', text: '' });
+      
+      await postsAPI.generateAIPost(credentials);
+      
+      setMessage({ type: 'success', text: 'AI post generated successfully!' });
+      
+      // Reload dashboard data
+      await loadDashboardData();
+      
+    } catch (err) {
+      setMessage({ type: 'error', text: err.message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGenerateNewsDigest = async () => {
+    if (!window.confirm('Generate today\'s tech news digest? This may take a few moments.')) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setMessage({ type: '', text: '' });
+      
+      await postsAPI.generateNewsDigest(credentials);
+      
+      setMessage({ type: 'success', text: 'Tech news digest generated successfully!' });
+      
+      // Reload dashboard data
+      await loadDashboardData();
+      
+    } catch (err) {
+      setMessage({ type: 'error', text: err.message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const renderDashboard = () => (
     <div className="dashboard">
       <h2>Dashboard Overview</h2>
@@ -235,6 +289,30 @@ const AdminPanel = () => {
           <h3>{stats.manualPosts}</h3>
           <p>Manual Posts</p>
         </div>
+      </div>
+      
+      <div className="dashboard-actions">
+        <h3>Content Generation</h3>
+        <div className="action-buttons-grid">
+          <button 
+            className="btn generate-ai-btn"
+            onClick={handleGenerateAI}
+            disabled={loading}
+          >
+            {loading ? 'Generating...' : 'Generate AI Post'}
+          </button>
+          <button 
+            className="btn generate-news-btn"
+            onClick={handleGenerateNewsDigest}
+            disabled={loading}
+          >
+            {loading ? 'Generating...' : 'Generate Tech News Digest'}
+          </button>
+        </div>
+        <p className="action-description">
+          Generate new content automatically using AI. AI posts cover various tech topics, 
+          while news digests aggregate the latest tech news from multiple sources.
+        </p>
       </div>
     </div>
   );

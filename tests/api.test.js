@@ -67,4 +67,51 @@ describe('API Endpoints', () => {
         .expect(401);
     });
   });
-});
+
+  describe('YouTube Video Support', () => {
+    it('should handle YouTube videos in media array', async () => {
+      const postData = {
+        title: 'Post with YouTube Video',
+        content: 'This post contains a YouTube video',
+        media: [{
+          type: 'youtube',
+          url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          caption: 'Test YouTube Video'
+        }]
+      };
+
+      const response = await request(app)
+        .post('/api/admin/posts')
+        .auth(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD)
+        .send(postData)
+        .expect(201);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.media).toHaveLength(1);
+      expect(response.body.data.media[0].type).toBe('youtube');
+      expect(response.body.data.media[0].videoId).toBe('dQw4w9WgXcQ');
+      expect(response.body.data.media[0].thumbnail).toContain('img.youtube.com');
+    });
+
+    it('should auto-detect YouTube URLs in video media', async () => {
+      const postData = {
+        title: 'Post with YouTube URL',
+        content: 'This post has a YouTube URL',
+        media: [{
+          type: 'video',
+          url: 'https://youtu.be/dQw4w9WgXcQ',
+          caption: 'Short YouTube URL'
+        }]
+      };
+
+      const response = await request(app)
+        .post('/api/admin/posts')
+        .auth(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD)
+        .send(postData)
+        .expect(201);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.media[0].type).toBe('youtube');
+      expect(response.body.data.media[0].videoId).toBe('dQw4w9WgXcQ');
+    });
+  });

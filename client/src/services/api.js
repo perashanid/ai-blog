@@ -97,6 +97,26 @@ export const postsAPI = {
         'Authorization': `Basic ${auth}`
       }
     });
+  },
+
+  // Generate AI post (admin)
+  generateAIPost: (credentials) => {
+    const auth = btoa(`${credentials.username}:${credentials.password}`);
+    return api.post('/admin/generate-ai', {}, {
+      headers: {
+        'Authorization': `Basic ${auth}`
+      }
+    });
+  },
+
+  // Generate tech news digest (admin)
+  generateNewsDigest: (credentials) => {
+    const auth = btoa(`${credentials.username}:${credentials.password}`);
+    return api.post('/admin/generate-news-digest', {}, {
+      headers: {
+        'Authorization': `Basic ${auth}`
+      }
+    });
   }
 };
 

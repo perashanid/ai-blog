@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const BlogPost = require('../models/BlogPost');
 const basicAuth = require('express-basic-auth');
+const cronService = require('../services/cronService');
 
 // Basic authentication middleware
 const authMiddleware = basicAuth({
@@ -304,6 +305,78 @@ router.delete('/posts/:id', async (req, res) => {
       error: {
         code: 'DELETE_POST_ERROR',
         message: 'Failed to delete post',
+        details: error.message
+      }
+    });
+  }
+});
+
+// POST /api/admin/generate-ai - Manually trigger AI post generation
+router.post('/generate-ai', async (req, res) => {
+  try {
+    await cronService.triggerAIGeneration();
+    res.json({
+      success: true,
+      message: 'AI post generation triggered successfully'
+    });
+  } catch (error) {
+    console.error('Error triggering AI generation:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'AI_GENERATION_ERROR',
+        message: 'Failed to trigger AI post generation',
+        details: error.message
+      }
+    });
+  }
+});
+
+// POST /api/admin/generate-news-digest - Manually trigger tech news digest
+router.post('/generate-news-digest', async (req, res) => {
+  try {
+    await cronService.triggerTechNewsDigest();
+    res.json({
+      success: true,
+      message: 'Tech news digest generation triggered successfully'
+    });
+  } catch (error) {
+    console.error('Error triggering news digest generation:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'NEWS_DIGEST_ERROR',
+        message: 'Failed to trigger tech news digest generation',
+        details: error.message
+      }
+    });
+  }
+});
+
+// GET /api/admin/test-news - Test news fetching (development only)
+router.get('/test-news', async (req, res) => {
+  if (process.env.NODE_ENV !== 'development') {
+    return res.status(404).json({ success: false, message: 'Not found' });
+  }
+  
+  try {
+    const newsService = require('../services/newsService');
+    const articles = await newsService.fetchNewsFromAPI();
+    
+    res.json({
+      success: true,
+      data: {
+        articlesCount: articles.length,
+        articles: articles.slice(0, 5) // Show first 5 for testing
+      }
+    });
+  } catch (error) {
+    console.error('Error testing news fetch:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'NEWS_TEST_ERROR',
+        message: 'Failed to test news fetching',
         details: error.message
       }
     });

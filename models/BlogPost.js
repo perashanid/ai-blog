@@ -39,7 +39,7 @@ const blogPostSchema = new mongoose.Schema({
   media: [{
     type: {
       type: String,
-      enum: ['image', 'video'],
+      enum: ['image', 'video', 'youtube'],
       required: true
     },
     url: {
@@ -53,6 +53,16 @@ const blogPostSchema = new mongoose.Schema({
     position: {
       type: Number,
       default: 0
+    },
+    // YouTube-specific fields
+    videoId: {
+      type: String,
+      required: function() {
+        return this.type === 'youtube';
+      }
+    },
+    thumbnail: {
+      type: String
     }
   }],
   tags: [{
@@ -60,6 +70,11 @@ const blogPostSchema = new mongoose.Schema({
     trim: true,
     maxLength: [50, 'Tag cannot exceed 50 characters']
   }],
+  newsDigest: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
   lastModified: {
     type: Date,
     default: Date.now
@@ -71,6 +86,28 @@ const blogPostSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+
+// Helper function to extract YouTube video ID
+const extractYouTubeId = (url) => {
+  if (!url || typeof url !== 'string') return null;
+  
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([^&\n?#]+)/,
+    /youtube\.com\/watch\?.*v=([^&\n?#]+)/,
+    /youtu\.be\/([^&\n?#]+)/,
+    /youtube\.com\/embed\/([^&\n?#]+)/,
+    /youtube\.com\/v\/([^&\n?#]+)/
+  ];
+  
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match && match[1]) {
+      return match[1];
+    }
+  }
+  
+  return null;
+};
 
 // Generate slug from title and update lastModified
 blogPostSchema.pre('save', function(next) {
@@ -86,6 +123,20 @@ blogPostSchema.pre('save', function(next) {
     // Strip HTML tags for excerpt
     const plainText = this.content.replace(/<[^>]*>/g, '');
     this.excerpt = plainText.substring(0, 150) + '...';
+  }
+  
+  // Process media items to handle YouTube videos
+  if (this.isModified('media') && this.media) {
+    this.media.forEach(item => {
+      if (item.type === 'video' || item.type === 'youtube') {
+        const videoId = extractYouTubeId(item.url);
+        if (videoId) {
+          item.type = 'youtube';
+          item.videoId = videoId;
+          item.thumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+        }
+      }
+    });
   }
   
   // Update lastModified if content changed
