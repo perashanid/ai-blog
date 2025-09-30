@@ -1,7 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import PostPage from './components/PostPage';
-import AdminPanel from './components/AdminPanel';
+import AdminLogin from './components/AdminLogin';
+import Contact from './components/Contact';
+import AboutUs from './components/AboutUs';
+import PrivacyPolicy from './components/PrivacyPolicy';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -27,7 +30,10 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/post/:identifier" element={<PostPage />} />
-              <Route path="/admin" element={<AdminPanel />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/secret-admin-portal" element={<AdminLogin />} />
             </Routes>
           </main>
           <Footer />

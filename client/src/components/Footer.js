@@ -1,9 +1,11 @@
+import { Link } from 'react-router-dom';
+
 const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-section">
-          <h3>AI Blog</h3>
+          <h3>Intellect</h3>
           <p>Exploring the future through artificial intelligence</p>
         </div>
         
@@ -17,18 +19,17 @@ const Footer = () => {
         </div>
         
         <div className="footer-section">
-          <h4>Technology</h4>
+          <h4>Quick Links</h4>
           <ul>
-            <li>React Frontend</li>
-            <li>Node.js Backend</li>
-            <li>MongoDB Database</li>
-            <li>OpenAI Integration</li>
+            <li><Link to="/about">About Us</Link></li>
+            <li><Link to="/contact">Contact</Link></li>
+            <li><Link to="/privacy">Privacy Policy</Link></li>
           </ul>
         </div>
       </div>
       
       <div className="footer-bottom">
-        <p>&copy; 2024 AI Blog. Powered by artificial intelligence.</p>
+        <p>&copy; 2024 Intellect. Powered by artificial intelligence.</p>
       </div>
     </footer>
   );

@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { HiHome, HiCog6Tooth } from 'react-icons/hi2';
 
 const Header = () => {
   return (
@@ -9,14 +8,9 @@ const Header = () => {
           Intellect
         </Link>
         <nav className="nav-links">
-          <Link to="/">
-            <HiHome className="w-4 h-4" />
-            Home
-          </Link>
-          <Link to="/admin">
-            <HiCog6Tooth className="w-4 h-4" />
-            Admin
-          </Link>
+          <Link to="/contact">Contact</Link>
+          <Link to="/about">About Us</Link>
+          <Link to="/privacy">Privacy Policy</Link>
         </nav>
       </div>
     </header>
