@@ -72,7 +72,7 @@ class CronService {
   async generateTechNewsDigest() {
     if (this.isRunning) {
       console.log('Another generation process is running, skipping tech news digest...');
-      return;
+      return { success: false, message: 'Another generation process is running' };
     }
 
     this.isRunning = true;
@@ -95,11 +95,17 @@ class CronService {
 
       if (existingDigest) {
         console.log('Tech news digest already exists for today, skipping...');
-        return;
+        return { success: false, message: 'Tech news digest already exists for today', existingPost: existingDigest.title };
       }
       
+      console.log('Calling newsService.createDailyTechDigest()...');
       const digestContent = await newsService.createDailyTechDigest();
       
+      if (!digestContent || !digestContent.title || !digestContent.content) {
+        throw new Error('Invalid digest content received from news service');
+      }
+      
+      console.log('Creating new blog post...');
       const post = new BlogPost({
         title: digestContent.title,
         content: digestContent.content,
@@ -111,9 +117,12 @@ class CronService {
       await post.save();
       
       console.log(`Tech news digest created successfully: "${post.title}"`);
+      return { success: true, message: 'Tech news digest created successfully', postTitle: post.title };
       
     } catch (error) {
       console.error('Failed to generate tech news digest:', error.message);
+      console.error('Error stack:', error.stack);
+      return { success: false, message: `Failed to generate tech news digest: ${error.message}` };
     } finally {
       this.isRunning = false;
     }

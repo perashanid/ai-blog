@@ -335,11 +335,26 @@ router.post('/generate-ai', async (req, res) => {
 // POST /api/admin/generate-news-digest - Manually trigger tech news digest
 router.post('/generate-news-digest', async (req, res) => {
   try {
-    await cronService.triggerTechNewsDigest();
-    res.json({
-      success: true,
-      message: 'Tech news digest generation triggered successfully'
-    });
+    console.log('Admin triggered tech news digest generation');
+    const result = await cronService.triggerTechNewsDigest();
+    
+    if (result.success) {
+      res.json({
+        success: true,
+        message: result.message,
+        data: {
+          postTitle: result.postTitle
+        }
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        error: {
+          code: 'NEWS_DIGEST_ERROR',
+          message: result.message
+        }
+      });
+    }
   } catch (error) {
     console.error('Error triggering news digest generation:', error);
     res.status(500).json({
