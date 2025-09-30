@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: ai-blog-website
+    env: node
+    plan: free
+    buildCommand: npm install && cd client && npm ci && npm run build && cd ..
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
