@@ -314,11 +314,26 @@ router.delete('/posts/:id', async (req, res) => {
 // POST /api/admin/generate-ai - Manually trigger AI post generation
 router.post('/generate-ai', async (req, res) => {
   try {
-    await cronService.triggerAIGeneration();
-    res.json({
-      success: true,
-      message: 'AI post generation triggered successfully'
-    });
+    console.log('Admin triggered AI post generation');
+    const result = await cronService.triggerAIGeneration();
+    
+    if (result.success) {
+      res.json({
+        success: true,
+        message: result.message,
+        data: {
+          postTitle: result.postTitle
+        }
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        error: {
+          code: 'AI_GENERATION_ERROR',
+          message: result.message
+        }
+      });
+    }
   } catch (error) {
     console.error('Error triggering AI generation:', error);
     res.status(500).json({

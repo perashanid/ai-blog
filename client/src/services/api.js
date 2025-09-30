@@ -7,7 +7,7 @@ const API_BASE_URL = process.env.NODE_ENV === 'production'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 120000, // 2 minutes for AI generation and news digest
 });
 
 // Request interceptor
@@ -108,7 +108,8 @@ export const postsAPI = {
     return api.post('/admin/generate-ai', {}, {
       headers: {
         'Authorization': `Basic ${auth}`
-      }
+      },
+      timeout: 180000 // 3 minutes for AI generation
     });
   },
 
@@ -118,7 +119,8 @@ export const postsAPI = {
     return api.post('/admin/generate-news-digest', {}, {
       headers: {
         'Authorization': `Basic ${auth}`
-      }
+      },
+      timeout: 180000 // 3 minutes for news digest generation
     });
   }
 };

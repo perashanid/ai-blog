@@ -102,6 +102,11 @@ const server = app.listen(PORT, () => {
   cronService.start();
 });
 
+// Increase server timeout for AI generation endpoints
+server.timeout = 300000; // 5 minutes
+server.keepAliveTimeout = 300000; // 5 minutes
+server.headersTimeout = 310000; // Slightly higher than keepAliveTimeout
+
 server.on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
     console.error(`Port ${PORT} is already in use. Please stop any running processes or change the port.`);

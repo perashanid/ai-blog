@@ -43,7 +43,7 @@ class NewsService {
                             apiKey: this.newsSources[0].apiKey,
                             from: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0] // Last 24 hours
                         },
-                        timeout: 10000
+                        timeout: 30000
                     });
 
                     if (newsApiResponse.data.articles) {
@@ -68,14 +68,14 @@ class NewsService {
             // Fetch from Hacker News
             console.log('Fetching from Hacker News...');
             try {
-                const hackerNewsResponse = await axios.get(this.newsSources[1].url, { timeout: 10000 });
+                const hackerNewsResponse = await axios.get(this.newsSources[1].url, { timeout: 30000 });
                 const topStoryIds = hackerNewsResponse.data.slice(0, 15); // Get top 15 stories
                 console.log(`Found ${topStoryIds.length} top stories from HN`);
 
                 let hnArticleCount = 0;
                 for (const id of topStoryIds) {
                     try {
-                        const storyResponse = await axios.get(this.newsSources[1].itemUrl.replace('{id}', id), { timeout: 5000 });
+                        const storyResponse = await axios.get(this.newsSources[1].itemUrl.replace('{id}', id), { timeout: 15000 });
                         const story = storyResponse.data;
                         
                         if (story && story.title && story.url && this.isTechRelated(story.title)) {
