@@ -8,10 +8,11 @@
     "dev": "npm run kill-ports && concurrently --names \"SERVER,CLIENT\" --prefix-colors \"blue,green\" \"npm run server\" \"wait-on http://localhost:8000/api/health && npm run client\"",
     "client": "cd client && npm start",
     "server": "nodemon server.js",
-    "build": "cd client && npm install && npm run build",
+    "build": "npm run build:client",
+    "build:client": "cd client && npm install && npm run build",
     "test": "jest",
     "kill-ports": "node scripts/kill-ports.js",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "heroku-postbuild": "npm run build:client"
   },
   "dependencies": {
     "@google/generative-ai": "^0.2.1",
