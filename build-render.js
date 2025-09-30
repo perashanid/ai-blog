@@ -19,11 +19,57 @@ if (!fs.existsSync(clientDir)) {
   process.exit(1);
 }
 
-// Check if client/public/index.html exists
-const indexHtmlPath = path.join(clientDir, 'public', 'index.html');
+// Ensure public directory and index.html exist
+const publicDir = path.join(clientDir, 'public');
+const indexHtmlPath = path.join(publicDir, 'index.html');
+
+if (!fs.existsSync(publicDir)) {
+  console.log('Creating public directory...');
+  fs.mkdirSync(publicDir, { recursive: true });
+}
+
 if (!fs.existsSync(indexHtmlPath)) {
-  console.error('index.html not found at:', indexHtmlPath);
-  process.exit(1);
+  console.log('Creating index.html...');
+  const indexHtmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="AI Blog Website" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <title>AI Blog Website</title>
+</head>
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+</body>
+</html>`;
+  fs.writeFileSync(indexHtmlPath, indexHtmlContent);
+}
+
+// Create manifest.json if it doesn't exist
+const manifestPath = path.join(publicDir, 'manifest.json');
+if (!fs.existsSync(manifestPath)) {
+  console.log('Creating manifest.json...');
+  const manifestContent = {
+    "short_name": "AI Blog",
+    "name": "AI Blog Website",
+    "icons": [
+      {
+        "src": "favicon.ico",
+        "sizes": "64x64 32x32 24x24 16x16",
+        "type": "image/x-icon"
+      }
+    ],
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff"
+  };
+  fs.writeFileSync(manifestPath, JSON.stringify(manifestContent, null, 2));
 }
 
 console.log('Found index.html at:', indexHtmlPath);

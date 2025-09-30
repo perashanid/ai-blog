@@ -1,6 +1,6 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-class NewAIService {
+class AIService {
     constructor() {
         this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         this.model = this.genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
@@ -43,14 +43,15 @@ class NewAIService {
       Make it suitable for a tech-savvy audience but accessible to general readers.
       Format it with clear paragraphs and structure.
       Do not include a title in the content - just write the body of the blog post.
-      Start directly with the content, no title or heading at the beginning.`;
+      Start directly with the content, no title or heading at the beginning.
+      Do NOT include any conclusion, summary, or closing section at the end.
+      End the post naturally after covering the main content without wrapping up statements.`;
 
             const result = await this.model.generateContent(prompt);
-            const response = result.response;
+            const response = await result.response;
             const content = response.text();
 
-            console.log('NEW SERVICE - Generated title:', title);
-            console.log('NEW SERVICE - Content preview:', content.substring(0, 200));
+
 
             return {
                 title: title,
@@ -64,4 +65,4 @@ class NewAIService {
     }
 }
 
-module.exports = new NewAIService();
+module.exports = new AIService();
