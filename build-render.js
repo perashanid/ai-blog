@@ -75,6 +75,10 @@ if (!fs.existsSync(manifestPath)) {
 console.log('Found index.html at:', indexHtmlPath);
 
 try {
+  // First install root dependencies
+  console.log('Installing root dependencies...');
+  execSync('npm install', { stdio: 'inherit', cwd: rootDir });
+  
   // Change to client directory and install dependencies
   console.log('Installing client dependencies...');
   process.chdir(clientDir);
