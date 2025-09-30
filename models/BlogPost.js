@@ -109,13 +109,35 @@ const extractYouTubeId = (url) => {
   return null;
 };
 
-// Generate slug from title and update lastModified
-blogPostSchema.pre('save', function(next) {
+// Generate unique slug from title and update lastModified
+blogPostSchema.pre('save', async function(next) {
   if (this.isModified('title')) {
-    this.slug = this.title
+    let baseSlug = this.title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
+    
+    // Ensure slug uniqueness
+    let slug = baseSlug;
+    let counter = 1;
+    
+    // Keep checking until we find a unique slug
+    while (true) {
+      const existingPost = await this.constructor.findOne({ 
+        slug: slug, 
+        _id: { $ne: this._id } // Exclude current document if updating
+      });
+      
+      if (!existingPost) {
+        break; // Slug is unique
+      }
+      
+      // Add counter to make it unique
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+    
+    this.slug = slug;
   }
   
   // Generate excerpt if not provided

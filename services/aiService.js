@@ -23,7 +23,10 @@ class AIService {
 
             const randomTopic = topics[Math.floor(Math.random() * topics.length)];
 
-            // Generate a simple title based on the topic
+            // Generate more unique titles with variety
+            const currentYear = new Date().getFullYear();
+            const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+            
             const titleVariations = [
                 `${randomTopic}: A Complete Guide`,
                 `Understanding ${randomTopic}`,
@@ -31,11 +34,31 @@ class AIService {
                 `The Future of ${randomTopic}`,
                 `${randomTopic}: Key Insights`,
                 `Exploring ${randomTopic}`,
-                `${randomTopic} in 2024`,
-                `${randomTopic}: Best Practices`
+                `${randomTopic} in ${currentYear}`,
+                `${randomTopic}: Best Practices`,
+                `${randomTopic}: What You Need to Know`,
+                `${randomTopic}: Trends and Innovations`,
+                `${randomTopic}: A Deep Dive`,
+                `${randomTopic}: ${currentMonth} ${currentYear} Update`,
+                `${randomTopic}: Modern Approaches`,
+                `${randomTopic}: Industry Perspectives`,
+                `${randomTopic}: Latest Developments`,
+                `${randomTopic}: Comprehensive Overview`,
+                `${randomTopic}: Essential Guide`,
+                `${randomTopic}: Current State and Future`,
+                `${randomTopic}: Professional Insights`,
+                `${randomTopic}: Advanced Concepts`
             ];
             
-            const title = titleVariations[Math.floor(Math.random() * titleVariations.length)];
+            let title = titleVariations[Math.floor(Math.random() * titleVariations.length)];
+            
+            // Add timestamp suffix for extra uniqueness if needed
+            const timestamp = Date.now().toString().slice(-4); // Last 4 digits of timestamp
+            const shouldAddTimestamp = Math.random() < 0.3; // 30% chance to add timestamp
+            
+            if (shouldAddTimestamp) {
+                title = `${title} (${timestamp})`;
+            }
 
             const prompt = `Write a comprehensive blog post about "${randomTopic}". 
       The post should be informative, engaging, and around 800-1200 words. 

@@ -68,6 +68,12 @@ class CronService {
     } catch (error) {
       console.error('Failed to generate AI post:', error.message);
       console.error('Error stack:', error.stack);
+      
+      // Handle duplicate slug error specifically
+      if (error.code === 11000 && error.message.includes('slug_1')) {
+        return { success: false, message: 'Failed to generate AI post: Duplicate content detected. Please try again.' };
+      }
+      
       return { success: false, message: `Failed to generate AI post: ${error.message}` };
     } finally {
       this.isRunning = false;
@@ -141,6 +147,12 @@ class CronService {
     } catch (error) {
       console.error('Failed to generate tech news digest:', error.message);
       console.error('Error stack:', error.stack);
+      
+      // Handle duplicate slug error specifically
+      if (error.code === 11000 && error.message.includes('slug_1')) {
+        return { success: false, message: 'Failed to generate tech news digest: Duplicate content detected. Please try again.' };
+      }
+      
       return { success: false, message: `Failed to generate tech news digest: ${error.message}` };
     } finally {
       this.isRunning = false;
