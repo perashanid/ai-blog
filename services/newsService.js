@@ -131,9 +131,10 @@ Format the content as a well-structured blog post with:
    - A 2-3 sentence summary in your own words
    - The original source link formatted as: [Read more at {source}]({url})
 4. Add insightful commentary connecting related stories
-5. End with a brief conclusion about trends or implications
 
 Make it engaging and informative. Use proper markdown formatting with headers, bullet points, and links.
+Do NOT include any conclusion, summary, or closing section at the end.
+End the digest naturally after covering all the news items without wrapping up statements.
 
 Here are the articles:
 ${newsData.map((article, index) => `

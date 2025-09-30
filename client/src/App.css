@@ -2432,3 +2432,26 @@ ontent Link Styles */
   font-style: italic;
   color: var(--color-text-light);
 }
+
+/* Bold and italic text styling */
+.post-content div[dangerouslySetInnerHTML] strong {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.post-content div[dangerouslySetInnerHTML] em {
+  font-style: italic;
+  color: var(--color-text-light);
+}
+
+.post-content div[dangerouslySetInnerHTML] strong em,
+.post-content div[dangerouslySetInnerHTML] em strong {
+  font-weight: 700;
+  font-style: italic;
+  color: var(--color-text);
+}
+
+/* Bullet points styling */
+.post-content div[dangerouslySetInnerHTML] p:has(• ) {
+  margin-left: 1rem;
+}
